@@ -1,1 +1,212 @@
-[{"id": 1, "name": "Laptop", "description": "High-performance laptop", "price": 999.99, "stock": 24}, {"id": 2, "name": "Smartphone", "description": "Latest smartphone model", "price": 699.99, "stock": 71}, {"id": 3, "name": "Headphones", "description": "Wireless noise-canceling headphones", "price": 199.99, "stock": 62}, {"id": 4, "name": "Tablet", "description": "10-inch tablet with HD display", "price": 299.99, "stock": 86}, {"id": 5, "name": "Smartwatch", "description": "Fitness tracking smartwatch", "price": 149.99, "stock": 98}, {"id": 6, "name": "Camera", "description": "DSLR camera with 24MP sensor", "price": 799.99, "stock": 10}, {"id": 7, "name": "Gaming Console", "description": "Next-gen gaming console", "price": 499.99, "stock": 12}, {"id": 8, "name": "TV", "description": "4K Ultra HD Smart TV", "price": 1299.99, "stock": 88}, {"id": 9, "name": "Monitor", "description": "27-inch QHD gaming monitor", "price": 399.99, "stock": 65}, {"id": 10, "name": "Wireless Earbuds", "description": "True wireless earbuds with ANC", "price": 129.99, "stock": 27}, {"id": 11, "name": "Printer", "description": "Wireless all-in-one printer", "price": 199.99, "stock": 72}, {"id": 12, "name": "External Hard Drive", "description": "1TB portable external hard drive", "price": 79.99, "stock": 30}, {"id": 13, "name": "Wireless Router", "description": "Dual-band WiFi router", "price": 49.99, "stock": 26}, {"id": 14, "name": "Fitness Tracker", "description": "Waterproof fitness tracker with heart rate monitor", "price": 79.99, "stock": 59}, {"id": 15, "name": "Electric Toothbrush", "description": "Sonic electric toothbrush with multiple modes", "price": 39.99, "stock": 63}, {"id": 16, "name": "Coffee Maker", "description": "Programmable coffee maker with built-in grinder", "price": 129.99, "stock": 0}, {"id": 17, "name": "Bluetooth Speaker", "description": "Portable Bluetooth speaker with 20W output", "price": 59.99, "stock": 78}, {"id": 18, "name": "Power Bank", "description": "High-capacity power bank with fast charging", "price": 29.99, "stock": 93}, {"id": 19, "name": "Smart Thermostat", "description": "Wi-Fi enabled smart thermostat for home automation", "price": 149.99, "stock": 99}, {"id": 20, "name": "Wireless Mouse", "description": "Ergonomic wireless mouse with customizable buttons", "price": 19.99, "stock": 57}, {"id": 21, "name": "Wireless Keyboard", "description": "Slim wireless keyboard with backlighting", "price": 49.99, "stock": 39}, {"id": 22, "name": "Bluetooth Earphones", "description": "Sweatproof Bluetooth earphones for sports", "price": 39.99, "stock": 53}, {"id": 23, "name": "Digital Camera", "description": "Compact digital camera with 20MP sensor", "price": 299.99, "stock": 87}, {"id": 24, "name": "Portable Projector", "description": "Mini portable projector for home entertainment", "price": 149.99, "stock": 45}, {"id": 25, "name": "Electric Scooter", "description": "Foldable electric scooter with long battery life", "price": 399.99, "stock": 64}, {"id": 26, "name": "Wireless Charging Pad", "description": "Qi-certified wireless charging pad", "price": 29.99, "stock": 74}, {"id": 27, "name": "Smart Home Camera", "description": "Indoor smart home security camera", "price": 79.99, "stock": 15}, {"id": 28, "name": "Portable Bluetooth Keyboard", "description": "Foldable portable Bluetooth keyboard", "price": 59.99, "stock": 98}, {"id": 29, "name": "USB-C Hub", "description": "Multiport USB-C hub with HDMI and SD card slots", "price": 49.99, "stock": 23}, {"id": 30, "name": "Electric Kettle", "description": "Stainless steel electric kettle with temperature control", "price": 34.99, "stock": 39}]
+[
+    {
+        "id": 1,
+        "name": "Laptop",
+        "description": "High-performance laptop",
+        "price": 999.99,
+        "stock": 2
+    },
+    {
+        "id": 2,
+        "name": "Smartphone",
+        "description": "Latest smartphone model",
+        "price": 699.99,
+        "stock": 53
+    },
+    {
+        "id": 3,
+        "name": "Headphones",
+        "description": "Wireless noise-canceling headphones",
+        "price": 199.99,
+        "stock": 81
+    },
+    {
+        "id": 4,
+        "name": "Tablet",
+        "description": "10-inch tablet with HD display",
+        "price": 299.99,
+        "stock": 74
+    },
+    {
+        "id": 5,
+        "name": "Smartwatch",
+        "description": "Fitness tracking smartwatch",
+        "price": 149.99,
+        "stock": 18
+    },
+    {
+        "id": 6,
+        "name": "Camera",
+        "description": "DSLR camera with 24MP sensor",
+        "price": 799.99,
+        "stock": 58
+    },
+    {
+        "id": 7,
+        "name": "Gaming Console",
+        "description": "Next-gen gaming console",
+        "price": 499.99,
+        "stock": 56
+    },
+    {
+        "id": 8,
+        "name": "TV",
+        "description": "4K Ultra HD Smart TV",
+        "price": 1299.99,
+        "stock": 52
+    },
+    {
+        "id": 9,
+        "name": "Monitor",
+        "description": "27-inch QHD gaming monitor",
+        "price": 399.99,
+        "stock": 39
+    },
+    {
+        "id": 10,
+        "name": "Wireless Earbuds",
+        "description": "True wireless earbuds with ANC",
+        "price": 129.99,
+        "stock": 28
+    },
+    {
+        "id": 11,
+        "name": "Printer",
+        "description": "Wireless all-in-one printer",
+        "price": 199.99,
+        "stock": 81
+    },
+    {
+        "id": 12,
+        "name": "External Hard Drive",
+        "description": "1TB portable external hard drive",
+        "price": 79.99,
+        "stock": 89
+    },
+    {
+        "id": 13,
+        "name": "Wireless Router",
+        "description": "Dual-band WiFi router",
+        "price": 49.99,
+        "stock": 83
+    },
+    {
+        "id": 14,
+        "name": "Fitness Tracker",
+        "description": "Waterproof fitness tracker with heart rate monitor",
+        "price": 79.99,
+        "stock": 70
+    },
+    {
+        "id": 15,
+        "name": "Electric Toothbrush",
+        "description": "Sonic electric toothbrush with multiple modes",
+        "price": 39.99,
+        "stock": 24
+    },
+    {
+        "id": 16,
+        "name": "Coffee Maker",
+        "description": "Programmable coffee maker with built-in grinder",
+        "price": 129.99,
+        "stock": 83
+    },
+    {
+        "id": 17,
+        "name": "Bluetooth Speaker",
+        "description": "Portable Bluetooth speaker with 20W output",
+        "price": 59.99,
+        "stock": 23
+    },
+    {
+        "id": 18,
+        "name": "Power Bank",
+        "description": "High-capacity power bank with fast charging",
+        "price": 29.99,
+        "stock": 46
+    },
+    {
+        "id": 19,
+        "name": "Smart Thermostat",
+        "description": "Wi-Fi enabled smart thermostat for home automation",
+        "price": 149.99,
+        "stock": 70
+    },
+    {
+        "id": 20,
+        "name": "Wireless Mouse",
+        "description": "Ergonomic wireless mouse with customizable buttons",
+        "price": 19.99,
+        "stock": 52
+    },
+    {
+        "id": 21,
+        "name": "Wireless Keyboard",
+        "description": "Slim wireless keyboard with backlighting",
+        "price": 49.99,
+        "stock": 18
+    },
+    {
+        "id": 22,
+        "name": "Bluetooth Earphones",
+        "description": "Sweatproof Bluetooth earphones for sports",
+        "price": 39.99,
+        "stock": 94
+    },
+    {
+        "id": 23,
+        "name": "Digital Camera",
+        "description": "Compact digital camera with 20MP sensor",
+        "price": 299.99,
+        "stock": 25
+    },
+    {
+        "id": 24,
+        "name": "Portable Projector",
+        "description": "Mini portable projector for home entertainment",
+        "price": 149.99,
+        "stock": 51
+    },
+    {
+        "id": 25,
+        "name": "Electric Scooter",
+        "description": "Foldable electric scooter with long battery life",
+        "price": 399.99,
+        "stock": 3
+    },
+    {
+        "id": 26,
+        "name": "Wireless Charging Pad",
+        "description": "Qi-certified wireless charging pad",
+        "price": 29.99,
+        "stock": 48
+    },
+    {
+        "id": 27,
+        "name": "Smart Home Camera",
+        "description": "Indoor smart home security camera",
+        "price": 79.99,
+        "stock": 69
+    },
+    {
+        "id": 28,
+        "name": "Portable Bluetooth Keyboard",
+        "description": "Foldable portable Bluetooth keyboard",
+        "price": 59.99,
+        "stock": 13
+    },
+    {
+        "id": 29,
+        "name": "USB-C Hub",
+        "description": "Multiport USB-C hub with HDMI and SD card slots",
+        "price": 49.99,
+        "stock": 64
+    },
+    {
+        "id": 30,
+        "name": "Electric Kettle",
+        "description": "Stainless steel electric kettle with temperature control",
+        "price": 34.99,
+        "stock": 27
+    }
+]

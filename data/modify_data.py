@@ -11,6 +11,6 @@ for p in products:
     
 
 with open("products.json", "w") as f:
-    prods = json.dumps(products)
+    prods = json.dumps(products, indent=4)
     f.write(prods)
     f.close()
