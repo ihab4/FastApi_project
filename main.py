@@ -17,6 +17,9 @@ with open("data/products.json") as f:
     products = json.load(f)
     f.close()
 
+
+# products = []
+
 def product_id(id):
     product, index = None, None
     for i, p in enumerate(products):
@@ -27,6 +30,8 @@ def product_id(id):
 
 
 def auto_id():
+    if len(products) == 0:
+        return 1
     p = products[-1]
     id = p["id"]
     id = id + 1
