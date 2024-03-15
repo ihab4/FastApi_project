@@ -7,7 +7,7 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class Product(BaseModel):
-    id: int
+    # id: int
     name: str
     description: str = ""
     price: float
@@ -24,6 +24,13 @@ def product_id(id):
             product, index = p, i
             break
     return index, product
+
+
+def auto_id():
+    p = products[-1]
+    id = p["id"]
+    id = id + 1
+    return id
 
 @app.get("/")
 def root():
@@ -54,9 +61,12 @@ def get_product(id: int):
 @app.post("/create", status_code=status.HTTP_201_CREATED)
 def create_product(new_product: Product):
     print(new_product.model_dump())
-    products.append(new_product.model_dump())
-    print(products)
-    return {"message": new_product}
+    product_dict = new_product.model_dump()
+    product_dict["id"] = auto_id()
+    # products.append(new_product.model_dump())
+    # print(products)
+    products.append(product_dict)
+    return {"message": product_dict}
 
 
 @app.delete("/product/{id}", status_code=status.HTTP_204_NO_CONTENT)
