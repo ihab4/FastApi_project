@@ -73,42 +73,36 @@ def get_products():
 
 @app.get("/product/{id}")
 def get_product(id: int):
-    # product = None
-    # for p in products:
-    #     if p["id"] == id:
-    #         product = p
-    product = product_id(id)[1]
 
-    # if not product:
-    #     response.status_code = status.HTTP_404_NOT_FOUND
-    #     return {"message": f"product with id {id} was not found"}
-            
+    cur.execute("SELECT * FROM products WHERE id = %s", (str(id),))
+    product = cur.fetchone()
+
     if not product:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id {id} was not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id {id} does not exists")
     
     return {"product": product}
 
 
 @app.post("/create", status_code=status.HTTP_201_CREATED)
 def create_product(new_product: Product):
-    print(new_product.model_dump())
-    product_dict = new_product.model_dump()
-    product_dict["id"] = auto_id()
-    # products.append(new_product.model_dump())
-    # print(products)
-    products.append(product_dict)
-    return {"message": product_dict}
+
+    cur.execute("""INSERT INTO products (name, description, price, stock) VALUES (%s, %s, %s, %s) RETURNING *""",
+                (new_product.name, new_product.description, new_product.price, new_product.stock))
+    product = cur.fetchone()
+    conn.commit()
+    return {"message": product}
 
 
 @app.delete("/product/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
-    # index = None
-    index = product_id(id)[0]
 
-    if index == None:
+    cur.execute("DELETE FROM products WHERE id = %s RETURNING *", (str(id),))
+    deleted_post = cur.fetchone()
+    conn.commit()
+
+    if deleted_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
 
-    products.pop(index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
