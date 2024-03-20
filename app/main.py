@@ -3,8 +3,32 @@ import json
 from fastapi import FastAPI, Response, status, HTTPException
 # from fastapi.params import Body
 from pydantic import BaseModel
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+from os import getenv
+from dotenv import load_dotenv
+from time import sleep
+
+
+load_dotenv()
+
+db_name, username, password, host = getenv("db_name"), getenv("username"), getenv("password"), getenv("host")
+while True:
+    try:
+        conn = psycopg2.connect(dbname=db_name, user=username, password=password,
+                                host=host, port="5432", cursor_factory=RealDictCursor)
+        cur = conn.cursor()
+        print("Database connection was succesfull.")
+        break
+    except Exception as error:
+        print("Connecting to database failed")
+        print("Error:", error)
+        sleep(2)
 
 app = FastAPI()
+
+
 
 class Product(BaseModel):
     # id: int
@@ -43,7 +67,9 @@ def root():
 
 @app.get("/products")
 def get_products():
-    return {"data": products}
+    cur.execute("SELECT * FROM products")
+    rows = cur.fetchall()
+    return {"data": rows}
 
 @app.get("/product/{id}")
 def get_product(id: int):
