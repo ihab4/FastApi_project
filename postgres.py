@@ -1,15 +1,15 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-import json
-import time
-import os
+from json import load
+from time import sleep
+from os import getenv
 from dotenv import load_dotenv
 
 
 load_dotenv()
 
-db_name, username, password, host = os.getenv("db_name"), os.getenv("username"), os.getenv("password"), os.getenv("host")
+db_name, username, password, host = getenv("db_name"), getenv("username"), getenv("password"), getenv("host")
 
 # Connect to PostgreSQL
 while True:
@@ -22,12 +22,12 @@ while True:
     except Exception as error:
         print("Connecting to database failed")
         print("Error:", error)
-        time.sleep(2)
+        sleep(2)
 
 
 #loading products.json
 with open("data/products.json") as f:
-    products = json.load(f)
+    products = load(f)
 
 # print(products)
 
