@@ -1,4 +1,4 @@
 # Ignore .env files
 *.env
 
-.my_env/
+my_env/
