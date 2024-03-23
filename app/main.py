@@ -12,6 +12,8 @@ from time import sleep
 load_dotenv()
 
 db_name, username, password, host = getenv("db_name"), getenv("username"), getenv("password"), getenv("host")
+
+#connecting to database
 while True:
     try:
         conn = psycopg2.connect(dbname=db_name, user=username, password=password,
@@ -38,12 +40,15 @@ class Product(BaseModel):
 def root():
     return {"message": "Hello World"}
 
+
+#get all products
 @app.get("/products")
 def get_products():
     cur.execute("SELECT * FROM products")
     rows = cur.fetchall()
     return {"data": rows}
 
+#get product by id
 @app.get("/product/{id}")
 def get_product(id: int):
 
@@ -55,7 +60,7 @@ def get_product(id: int):
     
     return {"product": product}
 
-
+#create new product
 @app.post("/create", status_code=status.HTTP_201_CREATED)
 def create_product(new_product: Product):
 
@@ -65,7 +70,7 @@ def create_product(new_product: Product):
     conn.commit()
     return {"message": product}
 
-
+#delete product
 @app.delete("/product/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
 
@@ -78,7 +83,7 @@ def delete_post(id: int):
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-
+#update product
 @app.put("/product/{id}")
 def update_product(id: int, product: Product):
 
@@ -91,6 +96,3 @@ def update_product(id: int, product: Product):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
 
     return {"procuct": updated_product}
-
-
-
