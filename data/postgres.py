@@ -26,7 +26,7 @@ while True:
 
 
 #loading products.json
-with open("data/products.json") as f:
+with open("products.json") as f:
     products = load(f)
 
 # print(products)
