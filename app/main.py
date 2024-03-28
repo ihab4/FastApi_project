@@ -9,8 +9,9 @@ from sqlalchemy.orm import Session
 
 from dotenv import load_dotenv
 
-from . import models, schemas
+from . import models, schemas, utils
 from .database import engine, get_db
+from .routers import product, seller
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -34,134 +35,140 @@ while True:
 
 app = FastAPI()
 
+app.include_router(product.router)
+app.include_router(seller.router)
+
 
 @app.get("/")
 def root():
     return {"message": "Hello World"}
 
 
-#get all products
-@app.get("/products")
-def get_products(db: Session = Depends(get_db)):
+# #get all products
+# @app.get("/products", tags=["products"])
+# def get_products(db: Session = Depends(get_db)):
 
-    products = db.query(models.Product).all()
-    return products
+#     products = db.query(models.Product).all()
+#     return products
 
-#get product by id
-@app.get("/product/{id}")
-def get_product(id: int, db: Session = Depends(get_db)):
+# #get product by id
+# @app.get("/product/{id}", tags=["products"])
+# def get_product(id: int, db: Session = Depends(get_db)):
 
-    product = db.query(models.Product).filter(models.Product.id == id).first()
+#     product = db.query(models.Product).filter(models.Product.id == id).first()
     
-    if not product:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id {id} does not exists")
+#     if not product:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id {id} does not exists")
     
-    return product
+#     return product
 
-#create new product
-@app.post("/create", status_code=status.HTTP_201_CREATED, response_model=schemas.ProductResponse)
-def create_product(new_product: schemas.CreateProduct, db: Session = Depends(get_db)):
+# #create new product
+# @app.post("/create", status_code=status.HTTP_201_CREATED, response_model=schemas.ProductResponse, tags=["products"])
+# def create_product(new_product: schemas.CreateProduct, db: Session = Depends(get_db)):
 
-    product_dict = new_product.model_dump()
-    product = models.Product(**product_dict)
-    db.add(product)
-    db.commit()
-    db.refresh(product)
+#     product_dict = new_product.model_dump()
+#     product = models.Product(**product_dict)
+#     db.add(product)
+#     db.commit()
+#     db.refresh(product)
 
-    return product
+#     return product
 
-#delete product
-@app.delete("/product/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db: Session = Depends(get_db)):
+# #delete product
+# @app.delete("/product/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["products"])
+# def delete_post(id: int, db: Session = Depends(get_db)):
 
-    product = db.query(models.Product).filter(models.Product.id == id)
+#     product = db.query(models.Product).filter(models.Product.id == id)
 
-    if not product.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
+#     if not product.first():
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
 
-    product.delete(synchronize_session=False)
-    db.commit()
+#     product.delete(synchronize_session=False)
+#     db.commit()
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+#     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-#update product
-@app.put("/product/{id}")
-def update_product(id: int, product: schemas.UpdateProduct, db: Session = Depends(get_db)):
+# #update product
+# @app.put("/product/{id}", tags=["products"])
+# def update_product(id: int, product: schemas.UpdateProduct, db: Session = Depends(get_db)):
 
-    product_query = db.query(models.Product).filter(models.Product.id == id)
+#     product_query = db.query(models.Product).filter(models.Product.id == id)
 
-    if not product_query.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
+#     if not product_query.first():
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
 
-    product_query.update(product.model_dump(), synchronize_session=False)
-    db.commit()
+#     product_query.update(product.model_dump(), synchronize_session=False)
+#     db.commit()
 
-    return product_query.first()
+#     return product_query.first()
 
-#***********************************************************************
-#SELLERS
+# #***********************************************************************
+# #SELLERS
 
-@app.post("/seller", status_code=status.HTTP_201_CREATED, response_model=schemas.SellerResponse)
-def create_product(new_seller: schemas.CreateSeller, db: Session = Depends(get_db)):
+# @app.post("/seller", status_code=status.HTTP_201_CREATED, response_model=schemas.SellerResponse, tags=["seller"])
+# def create_product(new_seller: schemas.CreateSeller, db: Session = Depends(get_db)):
 
-    seller_dict = new_seller.model_dump()
+#     hached_password = utils.get_password_hash(new_seller.password)
+#     new_seller.password = hached_password
 
-    seller = models.Seller(**seller_dict)
-    db.add(seller)
-    db.commit()
-    db.refresh(seller)
+#     seller_dict = new_seller.model_dump()
 
-    return seller
+#     seller = models.Seller(**seller_dict)
+#     db.add(seller)
+#     db.commit()
+#     db.refresh(seller)
 
-@app.get("/sellers", response_model=List[schemas.SellerResponse])
-def get_sellers(db: Session = Depends(get_db)):
-    sellers = db.query(models.Seller).all()
+#     return seller
 
-    return sellers
+# @app.get("/sellers", response_model=List[schemas.SellerResponse], tags=["seller"])
+# def get_sellers(db: Session = Depends(get_db)):
+#     sellers = db.query(models.Seller).all()
 
-@app.get("/seller/{id}", response_model=schemas.SellerResponse)
-def get_seller(id: int, db: Session = Depends(get_db)):
-    seller = db.query(models.Seller).filter(models.Seller.id == id).first()
+#     return sellers
 
-    if not seller:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+# @app.get("/seller/{id}", response_model=schemas.SellerResponse, tags=["seller"])
+# def get_seller(id: int, db: Session = Depends(get_db)):
+#     seller = db.query(models.Seller).filter(models.Seller.id == id).first()
+
+#     if not seller:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
     
-    return seller
+#     return seller
 
-@app.put("/seller/{id}", response_model=schemas.SellerResponse)
-def update_seller(id: int, seller: schemas.CreateSeller, db: Session = Depends(get_db)):
-    seller_query = db.query(models.Seller).filter(models.Seller.id == id)
+# @app.put("/seller/{id}", response_model=schemas.SellerResponse, tags=["seller"])
+# def update_seller(id: int, seller: schemas.CreateSeller, db: Session = Depends(get_db)):
+#     seller_query = db.query(models.Seller).filter(models.Seller.id == id)
 
-    if not seller_query.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+#     if not seller_query.first():
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
     
-    seller_query.update(seller.model_dump(), synchronize_session=False)
+#     seller_query.update(seller.model_dump(), synchronize_session=False)
 
-    db.commit()
+#     db.commit()
 
-    return seller_query.first()
+#     return seller_query.first()
 
-@app.put("/password/{id}")
-def change_password(id: int, seller: schemas.ChangePassword, db: Session = Depends(get_db)):
-    seller_query = db.query(models.Seller).filter(models.Seller.id == id)
+# @app.put("/password/{id}", tags=["seller"])
+# def change_password(id: int, seller: schemas.ChangePassword, db: Session = Depends(get_db)):
+#     seller_query = db.query(models.Seller).filter(models.Seller.id == id)
 
-    if not seller_query.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+#     if not seller_query.first():
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
     
-    seller_query.update(seller.model_dump(), synchronize_session=False)
+#     seller_query.update(seller.model_dump(), synchronize_session=False)
 
-    db.commit()
+#     db.commit()
 
-    return seller_query.first()
+#     return seller_query.first()
 
-@app.delete("/seller/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_seller(id: int, db: Session = Depends(get_db)):
-    seller = db.query(models.Seller).filter(models.Seller.id == id)
+# @app.delete("/seller/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["seller"])
+# def delete_seller(id: int, db: Session = Depends(get_db)):
+#     seller = db.query(models.Seller).filter(models.Seller.id == id)
 
-    if not seller.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+#     if not seller.first():
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
     
-    seller.delete(synchronize_session=False)
-    db.commit()
+#     seller.delete(synchronize_session=False)
+#     db.commit()
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+#     return Response(status_code=status.HTTP_204_NO_CONTENT)

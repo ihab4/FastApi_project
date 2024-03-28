@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class ProductBase(BaseModel):
@@ -27,7 +27,7 @@ class ProductResponse(ProductBase):
 
 
 class CreateSeller(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 class ChangePassword(BaseModel):
@@ -35,7 +35,7 @@ class ChangePassword(BaseModel):
 
 class SellerResponse(BaseModel):
     id: int
-    email: str
+    email: EmailStr
     created_at: datetime
 
     class Config:
