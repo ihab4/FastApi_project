@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends
 # from fastapi.params import Body
-from pydantic import BaseModel
+# from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -8,7 +8,7 @@ from os import getenv
 from dotenv import load_dotenv
 from time import sleep
 
-from . import models
+from . import models, schemas
 from .database import engine, get_db
 
 from sqlalchemy.orm import Session
@@ -35,22 +35,6 @@ while True:
 app = FastAPI()
 
 
-@app.get("/sqlalchemy")
-def test_orm(db: Session = Depends(get_db)):
-
-    products = db.query(models.Product).all()
-    print(db.query(models.Product))
-    return products
-
-
-class Product(BaseModel):
-    # id: int
-    name: str
-    description: str = ""
-    price: float
-    stock: int
-
-
 @app.get("/")
 def root():
     return {"message": "Hello World"}
@@ -63,7 +47,7 @@ def get_products(db: Session = Depends(get_db)):
     # rows = cur.fetchall()
 
     products = db.query(models.Product).all()
-    return {"data": products}
+    return products
 
 #get product by id
 @app.get("/product/{id}")
@@ -77,11 +61,11 @@ def get_product(id: int, db: Session = Depends(get_db)):
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id {id} does not exists")
     
-    return {"product": product}
+    return product
 
 #create new product
-@app.post("/create", status_code=status.HTTP_201_CREATED)
-def create_product(new_product: Product, db: Session = Depends(get_db)):
+@app.post("/create", status_code=status.HTTP_201_CREATED, response_model=schemas.ProductResponse)
+def create_product(new_product: schemas.CreateProduct, db: Session = Depends(get_db)):
 
     # cur.execute("""INSERT INTO products (name, description, price, stock) VALUES (%s, %s, %s, %s) RETURNING *""",
     #             (new_product.name, new_product.description, new_product.price, new_product.stock))
@@ -96,7 +80,7 @@ def create_product(new_product: Product, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(product)
 
-    return {"message": product}
+    return product
 
 #delete product
 @app.delete("/product/{id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -117,7 +101,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 #update product
 @app.put("/product/{id}")
-def update_product(id: int, product: Product, db: Session = Depends(get_db)):
+def update_product(id: int, product: schemas.CreateProduct, db: Session = Depends(get_db)):
 
     # cur.execute("""UPDATE products SET name = %s, description = %s, price = %s, stock = %s WHERE id = %s 
     #             RETURNING *""", (product.name, product.description, product.price, product.stock, str(id)))
@@ -132,4 +116,59 @@ def update_product(id: int, product: Product, db: Session = Depends(get_db)):
     product_query.update(product.model_dump(), synchronize_session=False)
     db.commit()
 
-    return {"procuct": product_query.first()}
+    return product_query.first()
+
+#***********************************************************************
+#SELLERS
+
+@app.post("/seller", status_code=status.HTTP_201_CREATED)
+def create_product(new_seller: schemas.CreateSeller, db: Session = Depends(get_db)):
+
+    seller_dict = new_seller.model_dump()
+
+    seller = models.Seller(**seller_dict)
+    db.add(seller)
+    db.commit()
+    db.refresh(seller)
+
+    return seller
+
+@app.get("/sellers")
+def get_sellers(db: Session = Depends(get_db)):
+    sellers = db.query(models.Seller).all()
+
+    return sellers
+
+@app.get("/seller/{id}")
+def get_seller(id: int, db: Session = Depends(get_db)):
+    seller = db.query(models.Seller).filter(models.Seller.id == id).first()
+
+    if not seller:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+    
+    return seller
+
+@app.put("/seller/{id}")
+def update_seller(id: int, seller: schemas.CreateSeller, db: Session = Depends(get_db)):
+    seller_query = db.query(models.Seller).filter(models.Seller.id == id)
+
+    if not seller_query.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+    
+    seller_query.update(seller.model_dump(), synchronize_session=False)
+
+    db.commit()
+
+    return seller_query.first()
+
+@app.delete("/seller/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_seller(id: int, db: Session = Depends(get_db)):
+    seller = db.query(models.Seller).filter(models.Seller.id == id)
+
+    if not seller.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+    
+    seller.delete(synchronize_session=False)
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
