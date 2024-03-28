@@ -43,8 +43,6 @@ def root():
 #get all products
 @app.get("/products")
 def get_products(db: Session = Depends(get_db)):
-    # cur.execute("SELECT * FROM products")
-    # rows = cur.fetchall()
 
     products = db.query(models.Product).all()
     return products
@@ -52,9 +50,6 @@ def get_products(db: Session = Depends(get_db)):
 #get product by id
 @app.get("/product/{id}")
 def get_product(id: int, db: Session = Depends(get_db)):
-
-    # cur.execute("SELECT * FROM products WHERE id = %s", (str(id),))
-    # product = cur.fetchone()
 
     product = db.query(models.Product).filter(models.Product.id == id).first()
     
@@ -67,14 +62,7 @@ def get_product(id: int, db: Session = Depends(get_db)):
 @app.post("/create", status_code=status.HTTP_201_CREATED, response_model=schemas.ProductResponse)
 def create_product(new_product: schemas.CreateProduct, db: Session = Depends(get_db)):
 
-    # cur.execute("""INSERT INTO products (name, description, price, stock) VALUES (%s, %s, %s, %s) RETURNING *""",
-    #             (new_product.name, new_product.description, new_product.price, new_product.stock))
-    # product = cur.fetchone()
-    # conn.commit()
-
     product_dict = new_product.model_dump()
-    # product = models.Product(name = new_product.name, description = new_product.description,
-    #                         price = new_product.price, stock = new_product.stock)
     product = models.Product(**product_dict)
     db.add(product)
     db.commit()
@@ -86,10 +74,6 @@ def create_product(new_product: schemas.CreateProduct, db: Session = Depends(get
 @app.delete("/product/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db)):
 
-    # cur.execute("DELETE FROM products WHERE id = %s RETURNING *", (str(id),))
-    # deleted_post = cur.fetchone()
-    # conn.commit()
-
     product = db.query(models.Product).filter(models.Product.id == id)
 
     if not product.first():
@@ -99,14 +83,10 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
 #update product
 @app.put("/product/{id}")
 def update_product(id: int, product: schemas.UpdateProduct, db: Session = Depends(get_db)):
-
-    # cur.execute("""UPDATE products SET name = %s, description = %s, price = %s, stock = %s WHERE id = %s 
-    #             RETURNING *""", (product.name, product.description, product.price, product.stock, str(id)))
-    # updated_product = cur.fetchone()
-    # conn.commit()
 
     product_query = db.query(models.Product).filter(models.Product.id == id)
 
@@ -121,7 +101,7 @@ def update_product(id: int, product: schemas.UpdateProduct, db: Session = Depend
 #***********************************************************************
 #SELLERS
 
-@app.post("/seller", status_code=status.HTTP_201_CREATED)
+@app.post("/seller", status_code=status.HTTP_201_CREATED, response_model=schemas.SellerResponse)
 def create_product(new_seller: schemas.CreateSeller, db: Session = Depends(get_db)):
 
     seller_dict = new_seller.model_dump()
@@ -148,7 +128,7 @@ def get_seller(id: int, db: Session = Depends(get_db)):
     
     return seller
 
-@app.put("/seller/{id}")
+@app.put("/seller/{id}", response_model=schemas.SellerResponse)
 def update_seller(id: int, seller: schemas.CreateSeller, db: Session = Depends(get_db)):
     seller_query = db.query(models.Seller).filter(models.Seller.id == id)
 
