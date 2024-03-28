@@ -1,17 +1,17 @@
+from os import getenv
+from time import sleep
+from typing import List
+
 from fastapi import FastAPI, Response, status, HTTPException, Depends
-# from fastapi.params import Body
-# from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from sqlalchemy.orm import Session
 
-from os import getenv
 from dotenv import load_dotenv
-from time import sleep
 
 from . import models, schemas
 from .database import engine, get_db
 
-from sqlalchemy.orm import Session
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -92,7 +92,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
 
     product = db.query(models.Product).filter(models.Product.id == id)
 
-    if product.first() == None:
+    if not product.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
 
     product.delete(synchronize_session=False)
@@ -101,7 +101,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 #update product
 @app.put("/product/{id}")
-def update_product(id: int, product: schemas.CreateProduct, db: Session = Depends(get_db)):
+def update_product(id: int, product: schemas.UpdateProduct, db: Session = Depends(get_db)):
 
     # cur.execute("""UPDATE products SET name = %s, description = %s, price = %s, stock = %s WHERE id = %s 
     #             RETURNING *""", (product.name, product.description, product.price, product.stock, str(id)))
@@ -110,7 +110,7 @@ def update_product(id: int, product: schemas.CreateProduct, db: Session = Depend
 
     product_query = db.query(models.Product).filter(models.Product.id == id)
 
-    if product_query.first() == None:
+    if not product_query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with id: {id} does not exists")
 
     product_query.update(product.model_dump(), synchronize_session=False)
@@ -133,13 +133,13 @@ def create_product(new_seller: schemas.CreateSeller, db: Session = Depends(get_d
 
     return seller
 
-@app.get("/sellers")
+@app.get("/sellers", response_model=List[schemas.SellerResponse])
 def get_sellers(db: Session = Depends(get_db)):
     sellers = db.query(models.Seller).all()
 
     return sellers
 
-@app.get("/seller/{id}")
+@app.get("/seller/{id}", response_model=schemas.SellerResponse)
 def get_seller(id: int, db: Session = Depends(get_db)):
     seller = db.query(models.Seller).filter(models.Seller.id == id).first()
 
@@ -150,6 +150,19 @@ def get_seller(id: int, db: Session = Depends(get_db)):
 
 @app.put("/seller/{id}")
 def update_seller(id: int, seller: schemas.CreateSeller, db: Session = Depends(get_db)):
+    seller_query = db.query(models.Seller).filter(models.Seller.id == id)
+
+    if not seller_query.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"seller with id {id} does not exist")
+    
+    seller_query.update(seller.model_dump(), synchronize_session=False)
+
+    db.commit()
+
+    return seller_query.first()
+
+@app.put("/password/{id}")
+def change_password(id: int, seller: schemas.ChangePassword, db: Session = Depends(get_db)):
     seller_query = db.query(models.Seller).filter(models.Seller.id == id)
 
     if not seller_query.first():

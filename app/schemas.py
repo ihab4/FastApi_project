@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from datetime import datetime
+
+from pydantic import BaseModel
 
 
 class ProductBase(BaseModel):
@@ -12,12 +13,13 @@ class ProductBase(BaseModel):
 class CreateProduct(ProductBase):
     pass
 
-class ProductResponse(BaseModel):
-    name: str
-    description: str
+class UpdateProduct(BaseModel):
     price: float
-    # stock: int
+    stock: int
+
+class ProductResponse(ProductBase):
     created_at: datetime
+    id: int
 
     class Config:
         from_attributes = True
@@ -28,11 +30,13 @@ class CreateSeller(BaseModel):
     email: str
     password: str
 
+class ChangePassword(BaseModel):
+    password: str
 
 class SellerResponse(BaseModel):
     id: int
     email: str
-    # created_at: datetime
+    created_at: datetime
 
     class Config:
         from_attributes = True
