@@ -7,15 +7,19 @@ from .. import models, schemas, utils
 from ..database import get_db
 
 
-router = APIRouter(tags=["sellers"])
+router = APIRouter(prefix="/sellers",tags=["sellers"])
 
-@router.post("/seller", status_code=status.HTTP_201_CREATED, response_model=schemas.SellerResponse)
-def create_product(new_seller: schemas.CreateSeller, db: Session = Depends(get_db)):
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.SellerResponse)
+def create_product(seller: schemas.CreateSeller, db: Session = Depends(get_db)):
 
-    hached_password = utils.get_password_hash(new_seller.password)
-    new_seller.password = hached_password
+    exist = db.query(models.Seller).filter(models.Seller.email == seller.email).first()
+    if exist:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="already exist")
 
-    seller_dict = new_seller.model_dump()
+    hached_password = utils.get_password_hash(seller.password)
+    seller.password = hached_password
+
+    seller_dict = seller.model_dump()
 
     seller = models.Seller(**seller_dict)
     db.add(seller)
@@ -24,13 +28,13 @@ def create_product(new_seller: schemas.CreateSeller, db: Session = Depends(get_d
 
     return seller
 
-@router.get("/sellers", response_model=List[schemas.SellerResponse])
+@router.get("/", response_model=List[schemas.SellerResponse])
 def get_sellers(db: Session = Depends(get_db)):
     sellers = db.query(models.Seller).all()
 
     return sellers
 
-@router.get("/seller/{id}", response_model=schemas.SellerResponse)
+@router.get("/{id}", response_model=schemas.SellerResponse)
 def get_seller(id: int, db: Session = Depends(get_db)):
     seller = db.query(models.Seller).filter(models.Seller.id == id).first()
 
@@ -39,7 +43,7 @@ def get_seller(id: int, db: Session = Depends(get_db)):
     
     return seller
 
-@router.put("/seller/{id}", response_model=schemas.SellerResponse)
+@router.put("/{id}", response_model=schemas.SellerResponse)
 def update_seller(id: int, seller: schemas.CreateSeller, db: Session = Depends(get_db)):
     seller_query = db.query(models.Seller).filter(models.Seller.id == id)
 
@@ -65,7 +69,7 @@ def change_password(id: int, seller: schemas.ChangePassword, db: Session = Depen
 
     return seller_query.first()
 
-@router.delete("/seller/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_seller(id: int, db: Session = Depends(get_db)):
     seller = db.query(models.Seller).filter(models.Seller.id == id)
 
