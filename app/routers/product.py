@@ -3,7 +3,7 @@ from typing import List
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 
-from .. import models, schemas
+from .. import models, schemas, oauth2
 from ..database import get_db
 
 
@@ -18,7 +18,7 @@ def get_products(db: Session = Depends(get_db)):
 
 #get product by id
 @router.get("/{id}")
-def get_product(id: int, db: Session = Depends(get_db)):
+def get_product(id: int, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
 
     product = db.query(models.Product).filter(models.Product.id == id).first()
     
@@ -29,8 +29,10 @@ def get_product(id: int, db: Session = Depends(get_db)):
 
 #create new product
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ProductResponse)
-def create_product(new_product: schemas.CreateProduct, db: Session = Depends(get_db)):
+def create_product(new_product: schemas.CreateProduct, db: Session = Depends(get_db),
+                   user_id: int = Depends(oauth2.get_current_user)):
 
+    print(user_id)
     product_dict = new_product.model_dump()
     product = models.Product(**product_dict)
     db.add(product)
